@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CROSSWIND | 乐队粉丝网站</title>
+
+    <style>
+        /* =========================
+           1. 全局样式
+        ========================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: #111;
+            color: #f2f2f2;
+            line-height: 1.8;
+        }
+
+        /* =========================
+           2. 首页背景照片
+           修改这里的图片路径即可更换背景
+        ========================= */
+        .hero {
+            min-height: 620px;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.55),
+                    rgba(0, 0, 0, 0.85)
+                ),
+                url("images/crosswind-bg.jpg");
+
+            /* 背景图片显示方式 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 9vw, 90px);
+            letter-spacing: 12px;
+            color: white;
+            text-shadow: 0 0 25px rgba(255,255,255,0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 18px;
+            letter-spacing: 5px;
+            color: #c9c9c9;
+            margin-top: 10px;
+        }
+
+        .hero .decoration {
+            width: 90px;
+            height: 3px;
+            background-color: #a52a2a;
+            margin: 30px auto;
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: #ddd;
+            font-size: 16px;
+        }
+
+        /* =========================
+           3. 导航栏
+        ========================= */
+        nav {
+            background-color: #171717;
+            border-bottom: 1px solid #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 45px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #bd4141;
+        }
+
+        /* =========================
+           4. 通用内容区域
+        ========================= */
+        section {
+            padding: 75px 20px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 30px;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+        }
+
+        .section-line {
+            width: 55px;
+            height: 3px;
+            background-color: #a52a2a;
+            margin: 0 auto 40px;
+        }
+
+        /* =========================
+           5. 乐队介绍
+        ========================= */
+        .band-intro {
+            text-align: center;
+            color: #bbb;
+            max-width: 800px;
+            margin: auto;
+            font-size: 16px;
+        }
+
+        .band-intro strong {
+            color: #eee;
+        }
+
+        .instrument-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .instrument {
+            border: 1px solid #555;
+            padding: 10px 22px;
+            color: #ddd;
+            background: #1b1b1b;
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           6. 成员搜索框
+        ========================= */
+        .search-area {
+            max-width: 650px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .search-area p {
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            display: flex;
+            border: 1px solid #555;
+            background: #1b1b1b;
+            padding: 5px;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 0;
+            padding: 14px;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+        }
+
+        .search-box input::placeholder {
+            color: #777;
+        }
+
+        .search-box button {
+            padding: 12px 25px;
+            border: none;
+            background: #922f2f;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #bd4141;
+        }
+
+        /* =========================
+           7. 搜索结果
+        ========================= */
+        #result {
+            margin-top: 35px;
+        }
+
+        .member-card {
+            background: #1b1b1b;
+            border: 1px solid #444;
+            border-left: 4px solid #a52a2a;
+            padding: 25px;
+            margin: 15px auto;
+            text-align: left;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .member-card h3 {
+            font-size: 24px;
+            color: #eee;
+            margin-bottom: 5px;
+        }
+
+        .member-card .role {
+            color: #b34b4b;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .member-card .description {
+            color: #bbb;
+            white-space: pre-wrap;
+        }
+
+        .no-result {
+            color: #999;
+            padding: 25px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================
+           8. 页脚
+        ========================= */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: #171717;
+            color: #777;
+            border-top: 1px solid #333;
+            font-size: 13px;
+        }
+
+        /* =========================
+           9. 手机端适配
+        ========================= */
+        @media (max-width: 600px) {
+            nav {
+                gap: 20px;
+                font-size: 13px;
+            }
+
+            .hero {
+                min-height: 500px;
+            }
+
+            .hero h1 {
+                letter-spacing: 5px;
+            }
+
+            .search-box button {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         首页
+    ========================= -->
+    <header class="hero">
+
+        <h1>CROSSWIND</h1>
+
+        <div class="subtitle">
+            乐队粉丝网站
+        </div>
+
+        <div class="decoration"></div>
+
+        <p>
+            欢迎来到 CROSSWIND 乐队粉丝网站。
+            在这里，认识五位乐队成员，
+            了解他们的故事，一起记录属于 CROSSWIND 的音乐与瞬间。
+        </p>
+
+    </header>
+
+
+    <!-- =========================
+         导航栏
+    ========================= -->
+    <nav>
+        <a href="#home">首页</a>
+        <a href="#about">乐队介绍</a>
+        <a href="#members">成员介绍</a>
+    </nav>
+
+
+    <!-- =========================
+         乐队介绍
+    ========================= -->
+    <section id="about">
+
+        <h2 class="section-title">ABOUT CROSSWIND</h2>
+
+        <div class="section-line"></div>
+
+        <div class="band-intro">
+
+            <p>
+                <strong>CROSSWIND</strong>
+                是一支由五位成员组成的乐队。
+                五个人，因为音乐相遇，
+                用不同的乐器与声音共同构建属于自己的音乐世界。
+            </p>
+
+            <p style="margin-top:20px;">
+                两位吉他手、一位贝斯手、一位键盘手，
+                以及一位鼓手。
+                五种不同的声音，汇聚成 CROSSWIND。
+            </p>
+
+            <div class="instrument-list">
+                <div class="instrument">GUITAR × 2</div>
+                <div class="instrument">BASS × 1</div>
+                <div class="instrument">KEYBOARD × 1</div>
+                <div class="instrument">DRUMS × 1</div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         成员搜索
+    ========================= -->
+    <section id="members">
+
+        <h2 class="section-title">MEMBERS</h2>
+
+        <div class="section-line"></div>
+
+        <div class="search-area">
+
+            <p>
+                输入成员姓名，探索 CROSSWIND 的五位成员。
+            </p>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="请输入成员姓名"
+                >
+
+                <button onclick="searchMember()">
+                    搜索
+                </button>
+
+            </div>
+
+            <div id="result">
+                <p class="no-result">
+                    输入成员姓名，查看成员介绍。
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         页脚
+    ========================= -->
+    <footer>
+
+        <p>CROSSWIND FAN SITE</p>
+
+        <p>记录音乐，记录相遇。</p>
+
+    </footer>
+
+
+    <!-- =========================
+         JavaScript：成员资料
+         以后只需要在这里修改成员资料！
+    ========================= -->
+    <script>
+
+        const members = [
+
+            {
+                name: "江焰",
+                role: "吉他手",
+                description: "【热爱吉他和音乐，嫉妒心重的美女】"
+            },
+
+            {
+                name: "古德猫宁",
+                role: "键盘手",
+                description: "【少数名族古德家族，异瞳，性格活泼可爱】"
+            },
+
+            {
+                name: "夏柒",
+                role: "鼓手",
+                description: "【家中“独自”，爱好很多，情商最高之人，高共情之人，自洽之人】"
+            },
+
+            {
+                name: "Rain",
+                role: "贝斯主唱",
+                description: "【艺术最精湛的一位，在crosswind之前的乐队担任吉他手】"
+            },
+
+            {
+                name: "吉他手",
+                role: "吉他主唱",
+                description: "【性格活泼喜欢唱歌的现充一位】"
+            }
+
+        ];
+
+
+        // =========================
+        // 搜索成员
+        // =========================
+
+        function searchMember() {
+
+            const keyword = document
+                .getElementById("searchInput")
+                .value.trim()
+                .toLowerCase();
+
+            const result = document.getElementById("result");
+
+            // 输入为空
+            if (keyword === "") {
+
+                result.innerHTML =
+                    '<p class="no-result">请输入成员姓名！</p>';
+
+                return;
+            }
+
+            // 匹配成员姓名、职位和介绍
+            const foundMembers = members.filter(member => {
+
+                return (
+                    member.name.toLowerCase().includes(keyword) ||
+                    member.role.toLowerCase().includes(keyword) ||
+                    member.description.toLowerCase().includes(keyword)
+                );
+
+            });
+
+            // 没有找到成员
+            if (foundMembers.length === 0) {
+
+                result.innerHTML =
+                    '<p class="no-result">没有找到这位成员，请检查姓名是否正确。</p>';
+
+                return;
+            }
+
+            // 清空原有搜索结果
+            result.innerHTML = "";
+
+            // 显示搜索结果
+            foundMembers.forEach(member => {
+
+                const card = document.createElement("div");
+                card.className = "member-card";
+
+                const name = document.createElement("h3");
+                name.textContent = member.name;
+
+                const role = document.createElement("div");
+                role.className = "role";
+                role.textContent = member.role;
+
+                const description = document.createElement("p");
+                description.className = "description";
+                description.textContent = member.description;
+
+                card.appendChild(name);
+                card.appendChild(role);
+                card.appendChild(description);
+
+                result.appendChild(card);
+
+            });
+
+        }
+
+
+        // 按下 Enter 键也可以搜索
+        document
+            .getElementById("searchInput")
+            .addEventListener("keydown", function(event) {
+
+                if (event.key === "Enter") {
+                    searchMember();
+                }
+
+            });
+
+    </script>
+
+</body>
+</html>
